@@ -17,13 +17,11 @@ class DigitRecognizer:
         self.digits = None
     
     def load_data(self):
-        """Load the digits dataset"""
         self.digits = load_digits()
         print(f"Loaded {self.digits.data.shape[0]} samples")
         return self.digits
     
     def preprocess_and_split(self, test_size=0.2, random_state=42):
-        """Split data into train and test"""
         X = self.digits.data
         y = self.digits.target
         self.X_train, self.X_test, self.Y_train, self.Y_test = train_test_split(
@@ -33,26 +31,22 @@ class DigitRecognizer:
         return self.X_train, self.X_test, self.Y_train, self.Y_test
     
     def train(self):
-        """Train KNN model"""
         self.model = KNeighborsClassifier(n_neighbors=self.k)
         self.model.fit(self.X_train, self.Y_train)
         print(f"Model trained with K={self.k}")
     
     def predict(self, samples=None):
-        """Predict on test set or provided samples"""
         if samples is None:
             samples = self.X_test
         return self.model.predict(samples)
     
     def evaluate(self):
-        """Evaluate model"""
         y_pred = self.predict()
         accuracy = accuracy_score(self.Y_test, y_pred)
         print(f"Accuracy: {accuracy:.4f}")
         return accuracy, y_pred
     
     def visualize_samples(self, n=10):
-        """Visualize sample digits"""
         fig, axes = plt.subplots(2, 5, figsize=(10, 4))
         for i, ax in enumerate(axes.flat):
             ax.imshow(self.digits.images[i], cmap='gray')
@@ -63,7 +57,6 @@ class DigitRecognizer:
         print('Sample images saved')
     
     def plot_accuracy_vs_k(self, ks=[1,3,5,7,9]):
-        """Plot accuracy for different K"""
         accuracies = []
         for k in ks:
             temp_knn = KNeighborsClassifier(n_neighbors=k)
@@ -82,7 +75,6 @@ class DigitRecognizer:
         return ks[np.argmax(accuracies)]
     
     def plot_confusion_matrix(self):
-        """Plot confusion matrix"""
         y_pred = self.predict()
         cm = confusion_matrix(self.Y_test, y_pred)
         plt.figure(figsize=(10,8))
@@ -93,7 +85,6 @@ class DigitRecognizer:
         plt.savefig('confusion_matrix.png')
         print('Confusion matrix saved')
 
-# Usage
 if __name__ == "__main__":
     recognizer = DigitRecognizer(k=7)
     recognizer.load_data()
